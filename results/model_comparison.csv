@@ -1,0 +1,3 @@
+Model,our_total_params,paper_total_params,accuracy,macro_precision,macro_recall,macro_f1,notes
+LMU,84223,41131,0.8863,0.8878,0.8885,0.8857,Hazan-inspired theta=1.0
+LSTM,33411,40899,0.8946,0.8971,0.8973,0.8935,Baseline LSTM comparison

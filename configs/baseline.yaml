@@ -1,0 +1,31 @@
+experiment:
+  name: "lmu_baseline"
+  seed_list: [42, 43, 44, 45, 46]
+
+dataset:
+  human_source: "C:/Users/2005g/Downloads/4691144/People.mat"
+  sampling_rate: 1000
+  window_samples: 1000
+  hop_samples: 700
+  stft_frame_length: 256
+  stft_frame_step: 128
+  synthetic:
+    enabled: true
+    replace_real: true
+    traces_per_class: 100
+    samples_per_trace: 10000
+    seed: 42
+    label_noise: 0.06
+
+model:
+  lmu_memory_d: 8
+  lmu_order: 212
+  lmu_hidden: 16
+  lstm_units: 32  # Tuned to match LMU params (~27k recurrent)
+
+training:
+  epochs: 50
+  batch_size: 64
+  learning_rate: 0.005
+  lr_decay_factor: 0.90
+  lr_decay_epochs: 2

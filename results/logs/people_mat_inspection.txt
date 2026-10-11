@@ -1,0 +1,15 @@
+{
+  "keys": [
+    "__header__",
+    "__version__",
+    "__globals__",
+    "people"
+  ],
+  "shape": [
+    1,
+    10
+  ],
+  "type": "<class 'numpy.ndarray'>",
+  "first_person_type": "<class 'numpy.ndarray'>",
+  "dtype": "object"
+}

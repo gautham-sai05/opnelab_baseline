@@ -1,0 +1,24 @@
+{
+  "seed": 42,
+  "lmu_test_accuracy": 0.8862876296043396,
+  "lmu_test_loss": 0.7386022210121155,
+  "lmu_metrics": {
+    "accuracy": 0.8862876254180602,
+    "precision": 0.8877541690852997,
+    "recall": 0.8884615384615384,
+    "f1": 0.8857206629806068
+  },
+  "lstm_test_accuracy": 0.8946488499641418,
+  "lstm_test_loss": 0.6882838010787964,
+  "lstm_metrics": {
+    "accuracy": 0.8946488294314381,
+    "precision": 0.8970852402591958,
+    "recall": 0.8973290598290599,
+    "f1": 0.893506109130248
+  },
+  "lmu_params": 84223,
+  "lstm_params": 33411,
+  "train_samples": 2717,
+  "val_samples": 585,
+  "test_samples": 598
+}

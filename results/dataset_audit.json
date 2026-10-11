@@ -1,0 +1,17 @@
+{
+    "num_people": 10,
+    "avg_sensors": 5.0,
+    "avg_speeds": 5.92,
+    "avg_traces": 10.260135135135135,
+    "avg_amps": 3.0,
+    "total_traces": 9111,
+    "min_trace_length": 6080,
+    "max_trace_length": 45056,
+    "median_trace_length": 14592,
+    "global_min": -522.2754141566265,
+    "global_max": 522.2243806306305,
+    "global_mean": -0.0006482738388730897,
+    "global_std": 54.18694664420054,
+    "total_nans": 0,
+    "total_infs": 0
+}

@@ -1,0 +1,59 @@
+1. Python environment
+- Current Active: Python 3.13.14
+- Alternate Versions (`py -0p`, `python3.11`, `python3.12`): Not found in PATH.
+- Blockers: TensorFlow (required by `keras-lmu`) does not support Python 3.13 and fails to install. A Python 3.11 or 3.12 environment must be explicitly installed on this machine to proceed with `model.summary()` and `model.fit()`.
+
+2. FootprintID structure
+- Contains 10 people (subjects), 5 geophone sensors, multiple walking speeds, and multiple amplifications.
+- Represented as a nested MATLAB cell array `people{person_id}.Sen{sensor_num}.S{speed_scale}`.
+- My earlier inspection yielded 9,111 extracted continuous traces with a median length of 14,592 samples.
+
+3. FootprintID sampling-rate evidence
+- A. Explicitly stated by the dataset source (`Experiment Introduction.pdf`): The PDF does not explicitly declare the numerical sampling frequency in the text.
+- B. Used by `read_data.m`: `fs = 25600`.
+- C. Inferred from trace duration: The trace lengths (median ~14.5k) plotted against the PDF's sample plot (which shows ~6 footsteps over an x-axis labeled 0.05 to 0.45 seconds) confirm that the raw arrays are stored at high-frequency (25,600 Hz). If it were 1000 Hz, the 14.5k samples would represent 14.5 seconds of walking, which is reasonable for a hallway pass, but the arrays themselves are dimensioned such that applying 25,600 Hz perfectly matches the ~0.5 second visual window in the paper's figures. The raw data is conclusively 25,600 Hz.
+
+4. FootprintID resampling plan
+- Target: 1000 Hz for LMU input.
+- Method: Rational resampling (`scipy.signal.resample_poly`) using `up=5` and `down=128` (25600 * 5 / 128 = 1000).
+- Anti-aliasing: A low-pass filter with a cutoff strictly below the 500 Hz target Nyquist frequency will be applied prior to decimation to prevent high-frequency aliasing.
+
+5. M3N-VC structure
+- Six ZIP files corresponding to different environment scenes (`a06`, `h08`, `h24`, `i22`, `i29`, `s31`).
+- Contains `.parquet` files for each sensor node (e.g., `run0_rs1_geo.parquet` for geophone data, plus `_mic` and `_gps` files).
+
+6. M3N-VC sampling-rate evidence
+- Parquet files contain `[timestamp, channel, samples]`.
+- The `timestamp` column stores Unix epoch integers in milliseconds (e.g., 1698116508250 to 1698116508251).
+- Because there is precisely one scalar sample per 1 ms increment, the sampling frequency is confirmed to be exactly 1000 Hz.
+
+7. M3N-VC metadata structure
+- Found `run_ids.parquet` inside the ZIPs.
+- Columns: `run_id`, `label`, `set`, `start_time`, `end_time`, `length`.
+- Each row represents a 10-30 minute continuous recording block.
+
+8. Vehicle labels
+- Identified specific vehicle classes within the `label` column: `gle350`, `mustang`, `miata`, `cx30`.
+
+9. Event-label mapping
+- M3N-VC annotates entire 10-30 minute `run` files with a single vehicle label (e.g., Run 0 is 31 minutes of `gle350`).
+- Granular start/stop event timestamps for individual vehicle passes are absent from the top-level metadata.
+
+10. Background/noise availability
+- M3N-VC does NOT provide explicitly annotated background/no-event intervals.
+- The `run_ids` span entire continuous runs. Using energy heuristics to slice "empty" segments from these runs would violate the instruction to avoid manufacturing unvalidated data.
+- Conclusion: M3N-VC provides the vehicle class but does not by itself provide a sufficiently explicit background/no-event class.
+
+11. Proposed train/validation/test split
+- Human (FootprintID): Trace/Person-level split. Train (Persons 1-7), Validation (Person 8), Test (Persons 9-10).
+- Vehicle (M3N-VC): Scene-level split. Train (`a06, h08, h24, i22`), Validation (`i29`), Test (`s31`).
+
+12. Cross-dataset/domain differences
+- FootprintID traces are short snippets from an indoor hallway recorded at 25.6 kHz.
+- M3N-VC traces are long 1000 Hz outdoor field recordings.
+- The datasets will inherently exhibit radically different noise floors, amplitude scales, and frequency spectra due to different sensors and environments.
+- Normalization (Z-score) will be required, but domain bias remains a significant scientific limitation.
+
+13. Remaining blockers
+- PYTHON ENVIRONMENT: TensorFlow cannot run on the available Python 3.13.14. A Python 3.11/3.12 installation is required.
+- NOISE CLASS: M3N-VC does not contain explicit noise labels. A separate validated noise dataset must be supplied, or the experiment reduced to a 2-class (Human vs. Vehicle) problem.

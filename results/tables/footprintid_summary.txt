@@ -1,0 +1,16 @@
+{
+  "num_people": 10,
+  "unique_sensors": [
+    "None"
+  ],
+  "unique_speeds": [
+    "None"
+  ],
+  "unique_amplifications": [
+    "None"
+  ],
+  "num_traces": 0,
+  "trace_length_stats": {},
+  "total_nan": 0,
+  "total_inf": 0
+}
